@@ -5,10 +5,17 @@
  */
 package view;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -129,6 +136,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/user.png"))); // NOI18N
         jMenuItem4.setText("Atletas");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem4);
 
         jMenuBar1.add(jMenu3);
@@ -180,6 +192,29 @@ public class TelaPrincipal extends javax.swing.JFrame {
             deleteAction = new DeleteRowFromTableAction(tableRef, modelEsporte);
         deleteAction.actionPerformed(evt);
     }//GEN-LAST:event_btnRemoveActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        Document document = new Document();
+
+        try{
+            PdfWriter.getInstance(document, new FileOutputStream("relatorio.pdf"));
+
+            document.open();
+            document.add(new Paragraph("Paragrafo 1"));
+            document.add(new Paragraph("Paragrafo 2"));
+            document.add(new Paragraph("Paragrafo 3"));
+        } catch (DocumentException | FileNotFoundException ex) {
+            System.out.println("Error:"+ex);
+        } finally {
+            document.close();
+        }
+
+        try {
+            Desktop.getDesktop().open(new File("relatorio.pdf"));
+        } catch (IOException ex) {
+            System.out.println("Error:"+ex);
+        }
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     /**
      * @param args the command line arguments
