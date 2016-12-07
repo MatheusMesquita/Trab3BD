@@ -130,7 +130,7 @@ public class TelaLogin extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Bem Vindo!");
             
             new TelaPrincipal().setVisible(true);
-            dispose();            
+            dispose();
         /*}
         else{
             JOptionPane.showMessageDialog(null, "Login invalido! Por favor utilize os dados informados no arquivo LEIA_ME.txt");

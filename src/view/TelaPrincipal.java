@@ -11,6 +11,7 @@ import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,6 +30,7 @@ import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -258,6 +260,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }
         
         JTable table = new JTable(modelModalidade);
+        table.getSelectionModel().addListSelectionListener((ListSelectionEvent evt) -> {
+            if(!evt.getValueIsAdjusting()){
+                JFrame frame = new TelaNovoEditarModalidade();
+                frame.setVisible(true);
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+                System.out.println(table.getValueAt(table.getSelectedRow(), 0).toString());
+            }
+        });
         JScrollPane scroll = new JScrollPane(table);
         jTabbedPane1.add("Modalidade", scroll);
         
@@ -281,6 +293,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }
         
         JTable table = new JTable(modelEsporte);
+        table.getSelectionModel().addListSelectionListener((ListSelectionEvent evt) -> {
+            if(!evt.getValueIsAdjusting()){
+                JFrame frame = new TelaNovoEditarEsporte();
+                frame.setVisible(true);
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+                System.out.println(table.getValueAt(table.getSelectedRow(), 0).toString());
+            }
+        });
         JScrollPane scroll = new JScrollPane(table);
         jTabbedPane1.add("Esporte", scroll);
         
