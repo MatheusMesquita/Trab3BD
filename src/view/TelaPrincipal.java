@@ -222,7 +222,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
             modelModalidade.addRow(rowData);
         }
         
-        
         JTable table = new JTable(modelModalidade);
         JScrollPane scroll = new JScrollPane(table);
         jTabbedPane1.add("Modalidade", scroll);

@@ -9,9 +9,13 @@ package models;
  *
  * @author EMAX
  */
-public class Esporte {
+public class Esporte {    
     private String nome;
 
+    public Esporte() {
+        
+    }
+    
     public String getNome() {
         return nome;
     }

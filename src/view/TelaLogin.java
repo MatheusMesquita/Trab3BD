@@ -1,13 +1,5 @@
 package view;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 /**
@@ -138,8 +130,7 @@ public class TelaLogin extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Bem Vindo!");
             
             new TelaPrincipal().setVisible(true);
-            this.setVisible(false);
-            
+            dispose();            
         /*}
         else{
             JOptionPane.showMessageDialog(null, "Login invalido! Por favor utilize os dados informados no arquivo LEIA_ME.txt");

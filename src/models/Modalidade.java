@@ -21,6 +21,10 @@ public class Modalidade {
     private String categoria;    
     private UnidadePonto unidade_ponto;
 
+    public Modalidade() {
+        
+    }
+    
     public int getId() {
         return id;
     }

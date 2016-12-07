@@ -13,6 +13,10 @@ public class Atleta {
     private int altura;
     private int peso;
 
+    public Atleta() {
+        
+    }
+    
     public int getAltura() {
         return altura;
     }
