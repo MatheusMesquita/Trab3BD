@@ -5,17 +5,81 @@
  */
 package view;
 
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
 /**
  *
  * @author Lucas
  */
 public class TelaPrincipal extends javax.swing.JFrame {
-
+    DefaultTableModel modelModalidade = new DefaultTableModel();
+    DefaultTableModel modelEsporte = new DefaultTableModel();
     /**
      * Creates new form TelaPrincipal
      */
     public TelaPrincipal() {
         initComponents();
+        
+        String[] columnNames = {"First Name",
+                                "Last Name",
+                                "Sport",
+                                "# of Years",
+                                "Vegetarian"};
+        
+        Object[][] data = {
+            {"Kathy", "Smith",
+             "Snowboarding", new Integer(5), new Boolean(false)},
+            {"John", "Doe",
+             "Rowing", new Integer(3), new Boolean(true)},
+            {"Sue", "Black",
+             "Knitting", new Integer(2), new Boolean(false)},
+            {"Jane", "White",
+             "Speed reading", new Integer(20), new Boolean(true)},
+            {"Joe", "Brown",
+             "Pool", new Integer(10), new Boolean(false)}
+        };
+        
+        Object[][] data2 = {
+            {"Kathy", "Smith",
+             "Snowboarding", new Integer(5), new Boolean(false)},
+            {"Kathy", "Smith",
+             "Snowboarding", new Integer(3), new Boolean(true)},
+            {"Kathy", "Smith",
+             "Snowboarding", new Integer(2), new Boolean(false)},
+            {"Kathy", "Smith",
+             "Snowboarding", new Integer(20), new Boolean(true)},
+            {"Kathy", "Smith",
+             "Snowboarding", new Integer(10), new Boolean(false)}
+        };
+        
+        configureTabModalidade(data, columnNames);
+        configureTabEsporte(data2, columnNames);
     }
 
     /**
@@ -30,10 +94,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jMenuBar2 = new javax.swing.JMenuBar();
         jMenu4 = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        btnAdd = new javax.swing.JButton();
+        btnRemove = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu2 = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem4 = new javax.swing.JMenuItem();
 
@@ -45,18 +109,20 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/group_key.png"))); // NOI18N
-        jMenu2.setText("Gerenciar");
+        btnAdd.setText("Adicionar");
+        btnAdd.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
 
-        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/page_white_edit.png"))); // NOI18N
-        jMenuItem2.setText("Entidade 1");
-        jMenu2.add(jMenuItem2);
-
-        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/page_white_edit.png"))); // NOI18N
-        jMenuItem3.setText("Entidade 2");
-        jMenu2.add(jMenuItem3);
-
-        jMenuBar1.add(jMenu2);
+        btnRemove.setLabel("Remover");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
 
         jMenu3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/report.png"))); // NOI18N
         jMenu3.setText("Relatorio");
@@ -73,16 +139,47 @@ public class TelaPrincipal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 310, Short.MAX_VALUE)
+                        .addComponent(btnAdd)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnRemove)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 278, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        System.out.println(jTabbedPane1.getSelectedIndex());
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        JScrollPane scrollRef = (JScrollPane) jTabbedPane1.getSelectedComponent();
+        JTable tableRef = (JTable) scrollRef.getViewport().getComponents()[0];
+        DeleteRowFromTableAction deleteAction = null;
+        if (jTabbedPane1.getSelectedIndex() == 0)
+            deleteAction = new DeleteRowFromTableAction(tableRef, modelModalidade);
+        else if (jTabbedPane1.getSelectedIndex() == 1)
+            deleteAction = new DeleteRowFromTableAction(tableRef, modelEsporte);
+        deleteAction.actionPerformed(evt);
+    }//GEN-LAST:event_btnRemoveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -110,24 +207,122 @@ public class TelaPrincipal extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TelaPrincipal().setVisible(true);
-            }
-        });
     }
 
+    private void configureTabModalidade(Object[][] data, String[] columnNames) {
+        
+        for (int index = 0; index < columnNames.length; index++) {
+            modelModalidade.addColumn(columnNames[index]);
+        }
+        for (int row = 0; row < data.length; row++) {
+            Vector<Object> rowData = new Vector<>(columnNames.length);
+            for (int col = 0; col < columnNames.length; col++) {
+                rowData.add(data[row][col]);
+            }
+            modelModalidade.addRow(rowData);
+        }
+        
+        
+        JTable table = new JTable(modelModalidade);
+        JScrollPane scroll = new JScrollPane(table);
+        jTabbedPane1.add("Modalidade", scroll);
+        
+        DeleteRowFromTableAction deleteAction = new DeleteRowFromTableAction(table, modelModalidade);
+        InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap am = table.getActionMap();
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "deleteRow");
+        am.put("deleteRow", deleteAction);
+    }
+    
+    private void configureTabEsporte(Object[][] data, String[] columnNames) {
+        for (int index = 0; index < columnNames.length; index++) {
+            modelEsporte.addColumn(columnNames[index]);
+        }
+        for (int row = 0; row < data.length; row++) {
+            Vector<Object> rowData = new Vector<>(columnNames.length);
+            for (int col = 0; col < columnNames.length; col++) {
+                rowData.add(data[row][col]);
+            }
+            modelEsporte.addRow(rowData);
+        }
+        
+        JTable table = new JTable(modelEsporte);
+        JScrollPane scroll = new JScrollPane(table);
+        jTabbedPane1.add("Esporte", scroll);
+        
+        DeleteRowFromTableAction deleteAction = new DeleteRowFromTableAction(table, modelEsporte);
+        InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap am = table.getActionMap();
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "deleteRow");
+        am.put("deleteRow", deleteAction);
+    }
+    
+    public abstract class AbstractTableAction<T extends JTable, M extends TableModel> extends AbstractAction {
+
+        private T table;
+        private M model;
+
+        public AbstractTableAction(T table, M model) {
+            this.table = table;
+            this.model = model;
+        }
+
+        public T getTable() {
+            return table;
+        }
+
+        public M getModel() {
+            return model;
+        }
+
+    }
+    
+    public class DeleteRowFromTableAction extends AbstractTableAction<JTable, DefaultTableModel> {
+
+        public DeleteRowFromTableAction(JTable table, DefaultTableModel model) {
+            super(table, model);
+            putValue(NAME, "Delete selected rows");
+            putValue(SHORT_DESCRIPTION, "Delete selected rows");
+            table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+                @Override
+                public void valueChanged(ListSelectionEvent e) {
+                    setEnabled(getTable().getSelectedRowCount() > 0);
+                }
+            });
+            setEnabled(getTable().getSelectedRowCount() > 0);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("...");
+            JTable table = getTable();
+            if (table.getSelectedRowCount() > 0) {
+                List<Vector> selectedRows = new ArrayList<>(25);
+                DefaultTableModel model = getModel();
+                Vector rowData = model.getDataVector();
+                for (int row : table.getSelectedRows()) {
+                    int modelRow = table.convertRowIndexToModel(row);
+                    Vector rowValue = (Vector) rowData.get(modelRow);
+                    selectedRows.add(rowValue);
+                }
+
+                for (Vector rowValue : selectedRows) {
+                    int rowIndex = rowData.indexOf(rowValue);
+                    model.removeRow(rowIndex);
+                }
+            }
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu2;
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnRemove;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuBar jMenuBar2;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }
