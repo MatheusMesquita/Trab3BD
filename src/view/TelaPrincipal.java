@@ -5,35 +5,24 @@
  */
 package view;
 
+import actions.DeleteRowFromTableAction;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Desktop;
-import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
-import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 /**
  *
@@ -304,63 +293,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
         ActionMap am = table.getActionMap();
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "deleteRow");
         am.put("deleteRow", deleteAction);
-    }
-    
-    public abstract class AbstractTableAction<T extends JTable, M extends TableModel> extends AbstractAction {
-
-        private T table;
-        private M model;
-
-        public AbstractTableAction(T table, M model) {
-            this.table = table;
-            this.model = model;
-        }
-
-        public T getTable() {
-            return table;
-        }
-
-        public M getModel() {
-            return model;
-        }
-
-    }
-    
-    public class DeleteRowFromTableAction extends AbstractTableAction<JTable, DefaultTableModel> {
-
-        public DeleteRowFromTableAction(JTable table, DefaultTableModel model) {
-            super(table, model);
-            putValue(NAME, "Delete selected rows");
-            putValue(SHORT_DESCRIPTION, "Delete selected rows");
-            table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-                @Override
-                public void valueChanged(ListSelectionEvent e) {
-                    setEnabled(getTable().getSelectedRowCount() > 0);
-                }
-            });
-            setEnabled(getTable().getSelectedRowCount() > 0);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("...");
-            JTable table = getTable();
-            if (table.getSelectedRowCount() > 0) {
-                List<Vector> selectedRows = new ArrayList<>(25);
-                DefaultTableModel model = getModel();
-                Vector rowData = model.getDataVector();
-                for (int row : table.getSelectedRows()) {
-                    int modelRow = table.convertRowIndexToModel(row);
-                    Vector rowValue = (Vector) rowData.get(modelRow);
-                    selectedRows.add(rowValue);
-                }
-
-                for (Vector rowValue : selectedRows) {
-                    int rowIndex = rowData.indexOf(rowValue);
-                    model.removeRow(rowIndex);
-                }
-            }
-        }
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
