@@ -26,6 +26,7 @@ import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
+import models.Atleta;
 import models.Esporte;
 import models.Modalidade;
 
@@ -36,9 +37,11 @@ import models.Modalidade;
 public class TelaPrincipal extends javax.swing.JFrame {
     DefaultTableModel modelModalidade = new DefaultTableModel();
     DefaultTableModel modelEsporte = new DefaultTableModel();
+    DefaultTableModel modelAtleta = new DefaultTableModel();
     
     private List<Modalidade> modalidades;
     private List<Esporte> esportes;
+    private List<Atleta> atletas;
     /**
      * Creates new form TelaPrincipal
      */
@@ -49,40 +52,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
         modalidades = db.getAllModalidades();
         esportes = db.getAllEsportes();
         
-        String[] columnNames = {"First Name",
-                                "Last Name",
-                                "Sport",
-                                "# of Years",
-                                "Vegetarian"};
-        
-        Object[][] data = {
-            {"Kathy", "Smith",
-             "Snowboarding", new Integer(5), new Boolean(false)},
-            {"John", "Doe",
-             "Rowing", new Integer(3), new Boolean(true)},
-            {"Sue", "Black",
-             "Knitting", new Integer(2), new Boolean(false)},
-            {"Jane", "White",
-             "Speed reading", new Integer(20), new Boolean(true)},
-            {"Joe", "Brown",
-             "Pool", new Integer(10), new Boolean(false)}
-        };
-        
-        Object[][] data2 = {
-            {"Kathy", "Smith",
-             "Snowboarding", new Integer(5), new Boolean(false)},
-            {"Kathy", "Smith",
-             "Snowboarding", new Integer(3), new Boolean(true)},
-            {"Kathy", "Smith",
-             "Snowboarding", new Integer(2), new Boolean(false)},
-            {"Kathy", "Smith",
-             "Snowboarding", new Integer(20), new Boolean(true)},
-            {"Kathy", "Smith",
-             "Snowboarding", new Integer(10), new Boolean(false)}
-        };
-        
-        configureTabModalidade(data, columnNames);
-        configureTabEsporte(data2, columnNames);
+        configureTabModalidade();
+        configureTabEsporte();
+        configureTabAtleta();
     }
 
     /**
@@ -240,7 +212,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         //</editor-fold>
     }
 
-    private void configureTabModalidade(Object[][] data, String[] columnNames) {
+    private void configureTabModalidade() {
         
         for (int index = 0; index < modalidades.get(0).getAtributos().size(); index++) {
             modelModalidade.addColumn(modalidades.get(0).getAtributo(index));
@@ -249,7 +221,26 @@ public class TelaPrincipal extends javax.swing.JFrame {
         for (int row = 0; row < modalidades.size(); row++) {
             Vector<Object> rowData = new Vector<>(modalidades.get(0).getAtributos().size());
             for (int col = 0; col < modalidades.get(0).getAtributos().size(); col++) {
-                rowData.add(data[row][col]);//##############################################################
+                switch(col) {
+                    case 0:
+                        rowData.add(modalidades.get(row).getId());
+                        break;
+                    case 1:
+                        rowData.add(modalidades.get(row).getNome());
+                        break;
+                    case 2:
+                        rowData.add(modalidades.get(row).getEsporte());
+                        break;
+                    case 3:
+                        rowData.add(modalidades.get(row).getN_equipe());
+                        break;
+                    case 4:
+                        rowData.add(modalidades.get(row).getCategoria());
+                        break;
+                    case 5:
+                        rowData.add(modalidades.get(row).getUnidade_ponto());
+                        break;
+                }
             }
             modelModalidade.addRow(rowData);
         }
@@ -275,17 +266,17 @@ public class TelaPrincipal extends javax.swing.JFrame {
         am.put("deleteRow", deleteAction);
     }
     
-    private void configureTabEsporte(Object[][] data, String[] columnNames) {
-        for (int index = 0; index < columnNames.length; index++) {
-            modelEsporte.addColumn(columnNames[index]);
-        }
-        for (int row = 0; row < data.length; row++) {
-            Vector<Object> rowData = new Vector<>(columnNames.length);
-            for (int col = 0; col < columnNames.length; col++) {
-                rowData.add(data[row][col]);
-            }
-            modelEsporte.addRow(rowData);
-        }
+    private void configureTabEsporte() {
+//        for (int index = 0; index < columnNames.length; index++) {
+//            modelEsporte.addColumn(columnNames[index]);
+//        }
+//        for (int row = 0; row < data.length; row++) {
+//            Vector<Object> rowData = new Vector<>(columnNames.length);
+//            for (int col = 0; col < columnNames.length; col++) {
+//                rowData.add(data[row][col]);
+//            }
+//            modelEsporte.addRow(rowData);
+//        }
         
         JTable table = new JTable(modelEsporte);
         table.getSelectionModel().addListSelectionListener((ListSelectionEvent evt) -> {
@@ -302,6 +293,66 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jTabbedPane1.add("Esporte", scroll);
         
         DeleteRowFromTableAction deleteAction = new DeleteRowFromTableAction(table, modelEsporte);
+        InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap am = table.getActionMap();
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "deleteRow");
+        am.put("deleteRow", deleteAction);
+    }
+    
+    private void configureTabAtleta() {
+        
+        for (int index = 0; index < atletas.get(0).getAtributos().size(); index++) {
+            modelAtleta.addColumn(atletas.get(0).getAtributo(index));
+        }
+        
+        for (int row = 0; row < atletas.size(); row++) {
+            Vector<Object> rowData = new Vector<>(atletas.get(0).getAtributos().size());
+            for (int col = 0; col < atletas.get(0).getAtributos().size(); col++) {
+                switch(col) {
+                    case 0:
+                        rowData.add(atletas.get(row).getId());
+                        break;
+                    case 1:
+                        rowData.add(atletas.get(row).getNome());
+                        break;
+                    case 2:
+                        rowData.add(atletas.get(row).getPassaporte());
+                        break;
+                    case 3:
+                        rowData.add(atletas.get(row).getSexo());
+                        break;
+                    case 4:
+                        rowData.add(atletas.get(row).getData_nasc());
+                        break;
+                    case 5:
+                        rowData.add(atletas.get(row).getIdade());
+                        break;
+                    case 6:
+                        rowData.add(atletas.get(row).getAltura());
+                        break;
+                    case 7:
+                        rowData.add(atletas.get(row).getPeso());
+                        break;
+                }
+            }
+            modelAtleta.addRow(rowData);
+        }
+        
+        JTable table = new JTable(modelAtleta);
+        table.getSelectionModel().addListSelectionListener((ListSelectionEvent evt) -> {
+            if(!evt.getValueIsAdjusting()){
+                JFrame frame = new TelaNovoEditarModalidade();
+                frame.setVisible(true);
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+                System.out.println(table.getValueAt(table.getSelectedRow(), 0).toString());
+            }
+        });
+        JScrollPane scroll = new JScrollPane(table);
+        jTabbedPane1.add("Atleta", scroll);
+        
+        DeleteRowFromTableAction deleteAction = new DeleteRowFromTableAction(table, modelAtleta);
         InputMap im = table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         ActionMap am = table.getActionMap();
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "deleteRow");

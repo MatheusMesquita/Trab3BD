@@ -13,16 +13,13 @@ import java.util.List;
  * @author EMAX
  */
 public class Modalidade {
-    public enum UnidadePonto {
-        SIMPLES, TEMPO
-    }
     
     private int id;
     private String nome;
     private String esporte;
     private int n_equipe;
     private String categoria;    
-    private UnidadePonto unidade_ponto;
+    private String unidade_ponto;
     private List<String> atributos;
 
     public Modalidade() {
@@ -75,11 +72,11 @@ public class Modalidade {
         this.categoria = categoria;
     }
 
-    public UnidadePonto getUnidade_ponto() {
+    public String getUnidade_ponto() {
         return unidade_ponto;
     }
 
-    public void setUnidade_ponto(UnidadePonto unidade_ponto) {
+    public void setUnidade_ponto(String unidade_ponto) {
         this.unidade_ponto = unidade_ponto;
     }
     

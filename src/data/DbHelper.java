@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import models.Atleta;
 import models.Esporte;
 import models.Modalidade;
 
@@ -49,6 +50,7 @@ public class DbHelper {
                 modalidade.setEsporte(rs.getString("ESPORTE"));
                 modalidade.setN_equipe(rs.getInt("N_EQUIPE"));
                 modalidade.setCategoria(rs.getString("CATEGORIA"));
+                modalidade.setUnidade_ponto(rs.getString("UNIDADE_PONTO"));
                 
                 modalidades.add(modalidade);
             }
@@ -74,6 +76,38 @@ public class DbHelper {
             System.out.println(ex.getMessage());
         }
         return esportes;
+    }
+    
+    public List<Atleta> getAllAtletas() {
+        List<Atleta> atletas = new ArrayList<>();
+        try {
+            stmt = connection.createStatement();
+            rs = stmt.executeQuery("SELECT ID_PESSOA, NOME, PASSAPORTE, SEXO, DATA_NASC, IDADE, ALTURA, PESO, count(*) as NumJogos\n" +
+                                    "FROM (PESSOA P JOIN ATLETA A ON P.ID_PESSOA = A.PESSOA)\n" +
+                                    "JOIN PARTICIPA_EQUIPE E ON E.ATLETA = A.PESSOA\n" +
+                                    "JOIN EQUIPE_JOGOU J ON J.EQUIPE_ID = E.EQUIPE_ID\n" +
+                                    "GROUP BY P.ID_PESSOA, ID_PESSOA, NOME, P.NOME, PASSAPORTE, \n" +
+                                    "SEXO, P.PASSAPORTE, DATA_NASC, IDADE, P.SEXO, \n" +
+                                    "P.DATA_NASC, P.IDADE\n" +
+                                    "HAVING count(*) > 3;");
+            while (rs.next()) {
+                Atleta atleta = new Atleta();
+                
+                atleta.setId(rs.getInt("ID_PESSOA"));
+                atleta.setNome(rs.getString("NOME"));
+                atleta.setPassaporte(rs.getString("PASSAPORTE"));
+                atleta.setSexo(rs.getString("SEXO"));
+                atleta.setData_nasc(rs.getString("DATA_NASC"));
+                atleta.setIdade(rs.getInt("IDADE"));
+                atleta.setAltura(rs.getInt("ALTURA"));
+                atleta.setPeso(rs.getInt("PESO"));
+                
+                atletas.add(atleta);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return atletas;
     }
     
     public void endConnection() {

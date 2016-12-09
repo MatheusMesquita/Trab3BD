@@ -18,7 +18,7 @@ public class Esporte {
 
     public Esporte() {
         atributos = new ArrayList<>();
-        atributos.add("nome");
+        atributos.add("NOME");
     }
     
     public String getNome() {
