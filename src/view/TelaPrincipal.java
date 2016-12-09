@@ -51,6 +51,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         DbHelper db = new DbHelper();
         modalidades = db.getAllModalidades();
         esportes = db.getAllEsportes();
+        atletas = db.getAllAtletas();
         
         configureTabModalidade();
         configureTabEsporte();
@@ -332,6 +333,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
                         break;
                     case 7:
                         rowData.add(atletas.get(row).getPeso());
+                        break;
+                    case 8:
+                        rowData.add(atletas.get(row).getNumJogos());
                         break;
                 }
             }

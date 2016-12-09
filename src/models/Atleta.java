@@ -21,6 +21,7 @@ public class Atleta {
     private int idade;
     private float altura;
     private float peso;
+    private int numJogos;
     private List<String> atributos;
 
     public Atleta() {
@@ -33,6 +34,7 @@ public class Atleta {
         atributos.add("IDADE");
         atributos.add("ALTURA");
         atributos.add("PESO");
+        atributos.add("NUM_JOGOS");
     }
     
     public float getAltura() {
@@ -97,6 +99,14 @@ public class Atleta {
 
     public void setIdade(int idade) {
         this.idade = idade;
+    }
+
+    public int getNumJogos() {
+        return numJogos;
+    }
+
+    public void setNumJogos(int numJogos) {
+        this.numJogos = numJogos;
     }
     
     public List<String> getAtributos() {

@@ -82,14 +82,13 @@ public class DbHelper {
         List<Atleta> atletas = new ArrayList<>();
         try {
             stmt = connection.createStatement();
-            rs = stmt.executeQuery("SELECT ID_PESSOA, NOME, PASSAPORTE, SEXO, DATA_NASC, IDADE, ALTURA, PESO, count(*) as NumJogos\n" +
-                                    "FROM (PESSOA P JOIN ATLETA A ON P.ID_PESSOA = A.PESSOA)\n" +
-                                    "JOIN PARTICIPA_EQUIPE E ON E.ATLETA = A.PESSOA\n" +
-                                    "JOIN EQUIPE_JOGOU J ON J.EQUIPE_ID = E.EQUIPE_ID\n" +
-                                    "GROUP BY P.ID_PESSOA, ID_PESSOA, NOME, P.NOME, PASSAPORTE, \n" +
-                                    "SEXO, P.PASSAPORTE, DATA_NASC, IDADE, P.SEXO, \n" +
-                                    "P.DATA_NASC, P.IDADE\n" +
-                                    "HAVING count(*) > 3;");
+            rs = stmt.executeQuery("SELECT ID_PESSOA, NOME, PASSAPORTE, SEXO, DATA_NASC, IDADE, ALTURA, PESO, count(*) as NumJogos " +
+                                    "FROM (PESSOA P JOIN ATLETA A ON P.ID_PESSOA = A.PESSOA) " +
+                                    "JOIN PARTICIPA_EQUIPE E ON E.ATLETA = A.PESSOA " +
+                                    "JOIN EQUIPE_JOGOU J ON J.EQUIPE_ID = E.EQUIPE_ID " +
+                                    "GROUP BY P.ID_PESSOA, ID_PESSOA, NOME, P.NOME, PASSAPORTE, " +
+                                    "SEXO, P.PASSAPORTE, DATA_NASC, IDADE, P.SEXO, " +
+                                    "P.DATA_NASC, P.IDADE, ALTURA, PESO HAVING count(*) > 3");
             while (rs.next()) {
                 Atleta atleta = new Atleta();
                 
@@ -101,6 +100,7 @@ public class DbHelper {
                 atleta.setIdade(rs.getInt("IDADE"));
                 atleta.setAltura(rs.getInt("ALTURA"));
                 atleta.setPeso(rs.getInt("PESO"));
+                atleta.setNumJogos(rs.getInt("NumJogos"));
                 
                 atletas.add(atleta);
             }
