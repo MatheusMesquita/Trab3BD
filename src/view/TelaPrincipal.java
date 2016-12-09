@@ -8,6 +8,7 @@ package view;
 import actions.DeleteRowFromTableAction;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
+import data.Data;
 import java.awt.Desktop;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -36,6 +37,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
      */
     public TelaPrincipal() {
         initComponents();
+        
+        Data data1 = new Data();
         
         String[] columnNames = {"First Name",
                                 "Last Name",
