@@ -5,6 +5,9 @@
  */
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author EMAX
@@ -20,9 +23,16 @@ public class Modalidade {
     private int n_equipe;
     private String categoria;    
     private UnidadePonto unidade_ponto;
+    private List<String> atributos;
 
     public Modalidade() {
-        
+        atributos = new ArrayList<>();
+        atributos.add("ID");
+        atributos.add("NOME");
+        atributos.add("ESPORTE");
+        atributos.add("N_EQUIPE");
+        atributos.add("CATEGORIA");
+        atributos.add("UNIDADE_PONTO");
     }
     
     public int getId() {
@@ -71,5 +81,13 @@ public class Modalidade {
 
     public void setUnidade_ponto(UnidadePonto unidade_ponto) {
         this.unidade_ponto = unidade_ponto;
+    }
+    
+    public List<String> getAtributos() {
+        return atributos;
+    }
+    
+    public String getAtributo(int index) {
+        return atributos.get(index);
     }
 }

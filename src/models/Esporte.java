@@ -5,15 +5,20 @@
  */
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author EMAX
  */
 public class Esporte {    
     private String nome;
+    private List<String> atributos;
 
     public Esporte() {
-        
+        atributos = new ArrayList<>();
+        atributos.add("nome");
     }
     
     public String getNome() {
@@ -22,5 +27,13 @@ public class Esporte {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+    
+    public List<String> getAtributos() {
+        return atributos;
+    }
+    
+    public String getAtributo(int index) {
+        return atributos.get(index);
     }
 }

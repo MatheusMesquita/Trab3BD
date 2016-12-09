@@ -8,7 +8,7 @@ package view;
 import actions.DeleteRowFromTableAction;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
-import data.Data;
+import data.DbHelper;
 import java.awt.Desktop;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -16,6 +16,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JFrame;
@@ -24,6 +26,8 @@ import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
+import models.Esporte;
+import models.Modalidade;
 
 /**
  *
@@ -32,13 +36,18 @@ import javax.swing.table.DefaultTableModel;
 public class TelaPrincipal extends javax.swing.JFrame {
     DefaultTableModel modelModalidade = new DefaultTableModel();
     DefaultTableModel modelEsporte = new DefaultTableModel();
+    
+    private List<Modalidade> modalidades;
+    private List<Esporte> esportes;
     /**
      * Creates new form TelaPrincipal
      */
     public TelaPrincipal() {
         initComponents();
         
-        Data data1 = new Data();
+        DbHelper db = new DbHelper();
+        modalidades = db.getAllModalidades();
+        esportes = db.getAllEsportes();
         
         String[] columnNames = {"First Name",
                                 "Last Name",
@@ -233,13 +242,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void configureTabModalidade(Object[][] data, String[] columnNames) {
         
-        for (int index = 0; index < columnNames.length; index++) {
-            modelModalidade.addColumn(columnNames[index]);
+        for (int index = 0; index < modalidades.get(0).getAtributos().size(); index++) {
+            modelModalidade.addColumn(modalidades.get(0).getAtributo(index));
         }
-        for (int row = 0; row < data.length; row++) {
-            Vector<Object> rowData = new Vector<>(columnNames.length);
-            for (int col = 0; col < columnNames.length; col++) {
-                rowData.add(data[row][col]);
+        
+        for (int row = 0; row < modalidades.size(); row++) {
+            Vector<Object> rowData = new Vector<>(modalidades.get(0).getAtributos().size());
+            for (int col = 0; col < modalidades.get(0).getAtributos().size(); col++) {
+                rowData.add(data[row][col]);//##############################################################
             }
             modelModalidade.addRow(rowData);
         }

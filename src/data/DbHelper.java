@@ -17,13 +17,13 @@ import models.Modalidade;
  *
  * @author EMAX
  */
-public class Data {
-    Statement stmt;
-    ResultSet rs;
-    Connection connection;
+public class DbHelper {
+    static Statement stmt;
+    static ResultSet rs;
+    static Connection connection;
     PreparedStatement pstmt;
     
-    public Data() {
+    public DbHelper() {
         try {
             /*CONEXÃO*/
             Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -31,8 +31,8 @@ public class Data {
                     "jdbc:oracle:thin:@grad.icmc.usp.br:15215:orcl",
                     "8531438",
                     "a");
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(DbHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -50,32 +50,30 @@ public class Data {
                 modalidade.setN_equipe(rs.getInt("N_EQUIPE"));
                 modalidade.setCategoria(rs.getString("CATEGORIA"));
                 
-                System.out.println(rs.getString("ID_MODALIDADE") + "-" 
-                        + rs.getString("NOME") + "-"
-                        + rs.getString("ESPORTE") + "-"
-                        + rs.getString("N_EQUIPE") + "-"
-			+ rs.getString("CATEGORIA") + "-"
-                        + rs.getString("UNIDADE_PONTO"));
+                modalidades.add(modalidade);
             }
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-        return null;
+        return modalidades;
     }
     
     public List<Esporte> getAllEsportes() {
+        List<Esporte> esportes = new ArrayList<>();
         try {
             stmt = connection.createStatement();
             rs = stmt.executeQuery("SELECT * FROM ESPORTE");
             while (rs.next()) {
-                System.out.println(rs.getString("ID_ESPORTE") + "-" 
-                        + rs.getString("ALTURA") + "-"
-                        + rs.getString("PESO"));
+                Esporte esporte = new Esporte();
+                
+                esporte.setNome(rs.getString("NOME"));
+                
+                esportes.add(esporte);
             }
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-        return null;
+        return esportes;
     }
     
     public void endConnection() {
@@ -83,7 +81,7 @@ public class Data {
             stmt.close();
             connection.close();
         } catch (SQLException ex) {
-            Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DbHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
