@@ -268,16 +268,22 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }
     
     private void configureTabEsporte() {
-//        for (int index = 0; index < columnNames.length; index++) {
-//            modelEsporte.addColumn(columnNames[index]);
-//        }
-//        for (int row = 0; row < data.length; row++) {
-//            Vector<Object> rowData = new Vector<>(columnNames.length);
-//            for (int col = 0; col < columnNames.length; col++) {
-//                rowData.add(data[row][col]);
-//            }
-//            modelEsporte.addRow(rowData);
-//        }
+        
+        for (int index = 0; index < esportes.get(0).getAtributos().size(); index++) {
+            modelEsporte.addColumn(esportes.get(0).getAtributo(index));
+        }
+        
+        for (int row = 0; row < esportes.size(); row++) {
+            Vector<Object> rowData = new Vector<>(esportes.get(0).getAtributos().size());
+            for (int col = 0; col < esportes.get(0).getAtributos().size(); col++) {
+                switch(col) {
+                    case 0:
+                        rowData.add(esportes.get(row).getNome());
+                        break;
+                }
+            }
+            modelEsporte.addRow(rowData);
+        }
         
         JTable table = new JTable(modelEsporte);
         table.getSelectionModel().addListSelectionListener((ListSelectionEvent evt) -> {
