@@ -11,6 +11,8 @@ import com.itextpdf.text.pdf.PdfWriter;
 import data.DbHelper;
 import java.awt.Desktop;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -24,6 +26,8 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
 import models.Atleta;
@@ -35,23 +39,44 @@ import models.Modalidade;
  * @author Lucas
  */
 public class TelaPrincipal extends javax.swing.JFrame {
-    DefaultTableModel modelModalidade = new DefaultTableModel();
-    DefaultTableModel modelEsporte = new DefaultTableModel();
-    DefaultTableModel modelAtleta = new DefaultTableModel();
+    private DefaultTableModel modelModalidade = new DefaultTableModel();
+    private DefaultTableModel modelEsporte = new DefaultTableModel();
+    private DefaultTableModel modelAtleta = new DefaultTableModel();
     
     private List<Modalidade> modalidades;
     private List<Esporte> esportes;
     private List<Atleta> atletas;
+    private DbHelper db;
     /**
      * Creates new form TelaPrincipal
      */
     public TelaPrincipal() {
         initComponents();
         
-        DbHelper db = new DbHelper();
+        db = new DbHelper();
         modalidades = db.getAllModalidades();
         esportes = db.getAllEsportes();
         atletas = db.getAllAtletas();
+        
+        jTabbedPane1.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                switch(jTabbedPane1.getSelectedIndex()) {
+                    case 0:
+                        btnAdd.setEnabled(true);
+                        btnRemove.setEnabled(true);
+                        break;
+                    case 1:
+                        btnAdd.setEnabled(true);
+                        btnRemove.setEnabled(true);
+                        break;
+                    case 2:
+                        btnAdd.setEnabled(false);
+                        btnRemove.setEnabled(false);
+                        break;
+                }
+            }
+        });
         
         configureTabModalidade();
         configureTabEsporte();
@@ -148,7 +173,24 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        System.out.println(jTabbedPane1.getSelectedIndex());
+        switch(jTabbedPane1.getSelectedIndex()) {
+            case 0:
+                JFrame frameModalidade = new TelaNovoEditarModalidade(db);
+                frameModalidade.setVisible(true);
+                frameModalidade.pack();
+                frameModalidade.setLocationRelativeTo(null);
+                frameModalidade.setVisible(true);
+                break;
+            case 1:
+                JFrame frameEsporte = new TelaNovoEditarEsporte(db);
+                frameEsporte.setVisible(true);
+                frameEsporte.pack();
+                frameEsporte.setLocationRelativeTo(null);
+                frameEsporte.setVisible(true);
+                break;
+            case 2:
+                break;
+        }
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
@@ -167,11 +209,23 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         try{
             PdfWriter.getInstance(document, new FileOutputStream("relatorio.pdf"));
-
             document.open();
-            document.add(new Paragraph("Paragrafo 1"));
-            document.add(new Paragraph("Paragrafo 2"));
-            document.add(new Paragraph("Paragrafo 3"));
+            document.add(new Paragraph(String.format("%10s%7s%15s%7s%7s%7s%7s%7s%7s",  
+                    "id", "nome", "passaporte", "sexo", "nasc", "idade", "altura", "peso", "nJogos")));
+            
+            for (int row = 0; row < atletas.size(); row++) {
+                document.add(new Paragraph(String.format("%10s%10s%10s%10s%25s%10s%10s%10s%10s", 
+                                           atletas.get(row).getId(),
+                                           atletas.get(row).getNome(),
+                                           atletas.get(row).getPassaporte(),
+                                           atletas.get(row).getSexo(),
+                                           atletas.get(row).getData_nasc(),
+                                           atletas.get(row).getIdade(),
+                                           atletas.get(row).getAltura(),
+                                           atletas.get(row).getPeso(),
+                                           atletas.get(row).getNumJogos())));
+            }
+
         } catch (DocumentException | FileNotFoundException ex) {
             System.out.println("Error:"+ex);
         } finally {
@@ -247,9 +301,22 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }
         
         JTable table = new JTable(modelModalidade);
+        table.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent e){
+                if(e.getClickCount()==2){
+//                    JFrame frame = new TelaNovoEditarModalidade(db);
+//                    frame.setVisible(true);
+//                    frame.pack();
+//                    frame.setLocationRelativeTo(null);
+//                    frame.setVisible(true);
+//                    System.out.println(table.getValueAt(table.getSelectedRow(), 0).toString());
+                }
+            }
+        });
         table.getSelectionModel().addListSelectionListener((ListSelectionEvent evt) -> {
             if(!evt.getValueIsAdjusting()){
-                JFrame frame = new TelaNovoEditarModalidade();
+                JFrame frame = new TelaNovoEditarModalidade(db);
                 frame.setVisible(true);
                 frame.pack();
                 frame.setLocationRelativeTo(null);
@@ -288,7 +355,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         JTable table = new JTable(modelEsporte);
         table.getSelectionModel().addListSelectionListener((ListSelectionEvent evt) -> {
             if(!evt.getValueIsAdjusting()){
-                JFrame frame = new TelaNovoEditarEsporte();
+                JFrame frame = new TelaNovoEditarEsporte(db);
                 frame.setVisible(true);
                 frame.pack();
                 frame.setLocationRelativeTo(null);
@@ -349,16 +416,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }
         
         JTable table = new JTable(modelAtleta);
-        table.getSelectionModel().addListSelectionListener((ListSelectionEvent evt) -> {
-            if(!evt.getValueIsAdjusting()){
-                JFrame frame = new TelaNovoEditarModalidade();
-                frame.setVisible(true);
-                frame.pack();
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
-                System.out.println(table.getValueAt(table.getSelectedRow(), 0).toString());
-            }
-        });
         JScrollPane scroll = new JScrollPane(table);
         jTabbedPane1.add("Atleta", scroll);
         

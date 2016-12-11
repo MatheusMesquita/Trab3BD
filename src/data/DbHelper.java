@@ -37,6 +37,24 @@ public class DbHelper {
         }
     }
     
+    public void addModalidade(String nome, String esporte, int n_equipe, String categoria, String unidade_ponto) {
+        try {
+            stmt = connection.createStatement();
+            stmt.executeQuery("INSERT INTO MODALIDADE VALUES " + nome + ", " + esporte + ", " + n_equipe + ", " + categoria + ", " + unidade_ponto);
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    
+    public void addEsporte(String nome) {
+        try {
+            stmt = connection.createStatement();
+            stmt.executeQuery("INSERT INTO ESPORTE(NOME) VALUES ('" + nome + "')");
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    
     public List<Modalidade> getAllModalidades() {
         List<Modalidade> modalidades = new ArrayList<>();
         try {
